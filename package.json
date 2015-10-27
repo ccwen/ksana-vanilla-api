@@ -1,0 +1,26 @@
+{
+  "name": "ksana-vanilla-api",
+  "version": "1.0.0",
+  "description": "vanilla api for pure js (no packager) use case",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ksanaforge/ksana-vanilla-api"
+  },
+  "author": "yapcheahshen@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ksanaforge/ksana-vanilla-api/issues"
+  },
+  "dependencies":{
+    "ksana-analyzer": "git+https://github.com/ksanaforge/ksana-analyzer.git",
+    "ksana-database": "git+https://github.com/ksanaforge/ksana-database.git",
+    "ksana-jsonrom": "git+https://github.com/ksanaforge/ksana-jsonrom.git",
+    "ksana-search": "git+https://github.com/ksanaforge/ksana-search.git",
+    "ksana-simple-api": "git+https://github.com/ksanaforge/ksana-simple-api.git"
+  }
+  ,"homepage": "https://github.com/ksanaforge/ksana-vanilla-api"
+}

@@ -1,0 +1,76 @@
+<html>
+<script src="ksana-vanilla.js"></script>
+<script>
+
+var openfile=function(e) {
+	var files=e.target.files;
+	kde.open(files[0],function(err,db){
+		if (err) {
+			alert("error open kdb")
+		} else {
+			showmessage("kdb open ok, pagecount "+db.get("meta").segcount);
+			window.db=files[0];
+		}
+	})
+}
+var showmessage=function(msg) {
+	document.getElementById("message").innerHTML=msg;
+}
+var PREFIX={0:"",1:"*",2:"**",3:"***",4:"****",5:"*****",6:"******"}
+var showtoc=function(toc) {
+	var out=[];
+	for (var i=0;i<toc.length;i++) {
+		//toc ={d:深度 , t:目錄節點 , vpos : 對應的內文座標 }
+		var node=toc[i];
+		prefix=PREFIX[node.d];
+		out.push(prefix+'<a href="#" onClick="opennode('+node.vpos+')">'+node.t+"</a>");
+	}
+	document.getElementById("output").innerHTML=out.join("<br/>");
+}
+
+var openpage=function(pageid) {
+	ksa.fetch({db:db,uti:pageid},function(err,pages){
+		document.getElementById("page").innerHTML=pages[0].uti+"<hr/>"+pages[0].text;
+	})
+}
+var opennode=function(vpos) {
+	ksa.vpos2txtid(db,vpos,function(err,txtid){ //將vpos 換算為頁碼
+		openpage(txtid);
+	}); //jiangkangyur.kdb
+}
+var fetchtoc=function() {
+	if (typeof db=="undefined") return showmessage("open file first");
+	ksa.toc({db:db},function(err,data){
+		showtoc(data.toc);
+	})
+}
+
+var showsearchresult=function(res){
+	var out=res.map(function(r){
+		//r={uti:頁碼, t:該頁經文, hits: 關鍵字的座標 }
+		return "<span color=brown>"+r.uti+"</span>."+ //each result page
+		 ksa.renderHits(r.text,r.hits,function(obj,text){ //塗紅
+			if (obj.className) return "<span style='color:red'>"+text+"</span>";
+			else return text;
+		}).join("");
+	});
+
+	document.getElementById("output").innerHTML=out.join("<hr/>");
+}
+var search=function() {
+	if (typeof db=="undefined") return showmessage("open file first");
+	var tofind=document.getElementById("tofind").value;
+	ksa.excerpt({db:db,q:tofind},function(err,data){
+		showsearchresult(data);
+	});
+}
+
+</script>
+<span id="message"></span>
+<br/><input type="file" accept=".kdb" onChange="openfile(event)"></input>
+
+<br/><button onClick="fetchtoc()">fetch toc</button>
+<br/><button onClick="search()">search</button><input value="སྨན་དང་གོས" id="tofind"></input>
+<div id="page"></div>
+<div id="output"></div>
+</html>
